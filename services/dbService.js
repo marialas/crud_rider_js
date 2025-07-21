@@ -1,25 +1,23 @@
-import { pool } from '../config/db.js';
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
 
-export const executeQuery = async (sql, params = []) => {
-  let connection;
-  try {
-    connection = await pool.getConnection();
-    const [rows] = await connection.query(sql, params);
-    return rows;
-  } catch (error) {
-    console.error('❌ Error en dbService:', error);
-    throw new Error(`Database error: ${error.message}`);
-  } finally {
-    if (connection) connection.release();
-  }
+dotenv.config();
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+export const getAllProducts = async () => {
+  const [rows] = await pool.query('SELECT * FROM products');
+  return rows;
 };
 
 export const closePool = async () => {
-  try {
-    await pool.end();
-    console.log('✔️ Pool de conexiones cerrado');
-  } catch (error) {
-    console.error('❌ Error al cerrar el pool:', error);
-    throw error;
-  }
+  await pool.end();
 };

@@ -3,45 +3,31 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import apiRouter from './routes/api.js';
+import apiRoutes from './routes/api.js';
 import { closePool } from './services/dbService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
-const PORT = process.env.PORT || 8000;
-
-console.log('Variables de entorno:', {
-  DB_USER: process.env.DB_USER,
-  DB_PASSWORD: process.env.DB_PASSWORD ? '****' : '(vacío)'
-}, '\nNúmero de puerto:', PORT);
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.CORS_ORIGIN,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api', apiRouter);
+app.use('/api', apiRoutes);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Middleware global de errores
 app.use((err, req, res, next) => {
   console.error('❌ Error global:', err);
-  res.status(500).json({
-    success: false,
-    error: 'Error interno del servidor',
-    details: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
+  res.status(500).json({ success: false, error: 'Error del servidor' });
 });
 
 const server = app.listen(PORT, () => {
@@ -49,10 +35,10 @@ const server = app.listen(PORT, () => {
 });
 
 const shutdown = async () => {
-  console.log('\n🔻 Recibida señal de apagado...');
+  console.log('\n🔻 Cerrando servidor...');
   await closePool();
   server.close(() => {
-    console.log('✔️ Servidor y conexiones cerradas');
+    console.log('✔️ Servidor apagado');
     process.exit(0);
   });
 };

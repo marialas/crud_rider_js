@@ -1,21 +1,10 @@
-import { executeQuery } from '../services/dbService.js';
+import { getAllProducts } from '../services/dbService.js';
 
 export const getProducts = async (req, res, next) => {
   try {
-    const products = await executeQuery('SELECT * FROM products');
-    if (!products || products.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No se encontraron productos"
-      });
-    }
-    res.json({
-      success: true,
-      data: products,
-      count: products.length
-    });
+    const productos = await getAllProducts();
+    res.json(productos);
   } catch (error) {
-    console.error('❌ Error en productController:', error);
     next(error);
   }
 };
