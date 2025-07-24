@@ -15,3 +15,12 @@ export const formatPrice = (price) => {
   const numericValue = parseFloat(price);
   return isNaN(numericValue) ? '0.00' : numericValue.toFixed(2);
 };
+
+// Utilidades reutilizables
+function obtenerDatosLS(clave) {
+  return JSON.parse(localStorage.getItem(clave)) || [];
+}
+
+function guardarDatosLS(clave, datos) {
+  localStorage.setItem(clave, JSON.stringify(datos));
+}

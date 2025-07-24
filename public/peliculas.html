@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Películas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>CRUD de Películas</h1>
+  <a href="index.html">⬅ Volver al Inicio</a>
+
+  <form id="formPelicula">
+    <input type="text" id="titulo" placeholder="Título de la película" required>
+    <input type="text" id="genero" placeholder="Género" required>
+    <button type="submit">Guardar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Género</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaPeliculas"></tbody>
+  </table>
+
+  <script src="js/peliculas.js"></script>
+</body>
+</html>
